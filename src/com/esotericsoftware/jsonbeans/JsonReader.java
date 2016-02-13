@@ -24,11 +24,14 @@ import com.esotericsoftware.jsonbeans.JsonValue.ValueType;
 import java.io.*;
 import java.util.ArrayList;
 
-/** Lightweight JSON parser.<br>
+/**
+ * Lightweight JSON parser.<br>
  * <br>
  * The default behavior is to parse the JSON into a DOM containing {@link JsonValue} objects. Extend this class and override
  * methods to perform event driven parsing. When this is done, the parse methods will return null.
- * @author Nathan Sweet */
+ *
+ * @author Nathan Sweet
+ */
 public class JsonReader {
     public JsonValue parse(String json) {
         char[] data = json.toCharArray();
