@@ -16,52 +16,35 @@
 
 package com.esotericsoftware.jsonbeans;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.security.AccessControlException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.esotericsoftware.jsonbeans.JsonValue.PrettyPrintSettings;
 import com.esotericsoftware.jsonbeans.ObjectMap.Entry;
 import com.esotericsoftware.jsonbeans.OrderedMap.OrderedMapValues;
+
+import java.io.*;
+import java.lang.reflect.*;
+import java.security.AccessControlException;
+import java.util.*;
 
 /** Reads/writes Java objects to/from JSON, automatically. See the wiki for usage:
  * https://github.com/libgdx/libgdx/wiki/Reading-%26-writing-JSON
  * @author Nathan Sweet */
 public class Json {
-	static private final boolean debug = false;
+	protected boolean debug = false;
 
-	private JsonWriter writer;
-	private String typeName = "class";
-	private boolean usePrototypes = true;
-	private OutputType outputType;
-	private boolean quoteLongValues;
-	private boolean ignoreUnknownFields;
-	private boolean enumNames = true;
-	private JsonSerializer defaultSerializer;
-	private final ObjectMap<Class, OrderedMap<String, FieldMetadata>> typeToFields = new ObjectMap();
-	private final ObjectMap<String, Class> tagToClass = new ObjectMap();
-	private final ObjectMap<Class, String> classToTag = new ObjectMap();
-	private final ObjectMap<Class, JsonSerializer> classToSerializer = new ObjectMap();
-	private final ObjectMap<Class, Object[]> classToDefaultValues = new ObjectMap();
-	private final Object[] equals1 = {null}, equals2 = {null};
+	protected JsonWriter writer;
+	protected String typeName = "class";
+	protected boolean usePrototypes = true;
+	protected OutputType outputType;
+	protected boolean quoteLongValues;
+	protected boolean ignoreUnknownFields;
+	protected boolean enumNames = true;
+	protected JsonSerializer defaultSerializer;
+	protected final ObjectMap<Class, OrderedMap<String, FieldMetadata>> typeToFields = new ObjectMap();
+	protected final ObjectMap<String, Class> tagToClass = new ObjectMap();
+	protected final ObjectMap<Class, String> classToTag = new ObjectMap();
+	protected final ObjectMap<Class, JsonSerializer> classToSerializer = new ObjectMap();
+	protected final ObjectMap<Class, Object[]> classToDefaultValues = new ObjectMap();
+	protected final Object[] equals1 = {null}, equals2 = {null};
 
 	public Json () {
 		outputType = OutputType.minimal;
@@ -145,7 +128,7 @@ public class Json {
 		metadata.elementType = elementType;
 	}
 
-	private OrderedMap<String, FieldMetadata> getFields (Class type) {
+	protected OrderedMap<String, FieldMetadata> getFields (Class type) {
 		OrderedMap<String, FieldMetadata> fields = typeToFields.get(type);
 		if (fields != null) return fields;
 
@@ -300,7 +283,7 @@ public class Json {
 		}
 	}
 
-	private Object[] getDefaultValues (Class type) {
+	protected Object[] getDefaultValues (Class type) {
 		if (!usePrototypes) return null;
 		if (classToDefaultValues.containsKey(type)) return classToDefaultValues.get(type);
 		Object object;
@@ -970,11 +953,11 @@ public class Json {
 		return null;
 	}
 
-	private String convertToString (Enum e) {
+	protected String convertToString (Enum e) {
 		return enumNames ? e.name() : e.toString();
 	}
 
-	private String convertToString (Object object) {
+	protected String convertToString (Object object) {
 		if (object instanceof Enum) return convertToString((Enum)object);
 		if (object instanceof Class) return ((Class)object).getName();
 		return String.valueOf(object);
@@ -985,7 +968,7 @@ public class Json {
 			return type.newInstance();
 		} catch (Exception ex) {
 			try {
-				// Try a private constructor.
+				// Try a protected constructor.
 				Constructor constructor = type.getDeclaredConstructor();
 				constructor.setAccessible(true);
 				return constructor.newInstance();
@@ -1001,8 +984,8 @@ public class Json {
 					throw new JsonException("Class cannot be created (non-static member class): " + type.getName(), ex);
 				else
 					throw new JsonException("Class cannot be created (missing no-arg constructor): " + type.getName(), ex);
-			} catch (Exception privateConstructorException) {
-				ex = privateConstructorException;
+			} catch (Exception protectedConstructorException) {
+				ex = protectedConstructorException;
 			}
 			throw new JsonException("Error constructing instance of class: " + type.getName(), ex);
 		}
@@ -1032,7 +1015,7 @@ public class Json {
 		return new JsonReader().parse(json).prettyPrint(settings);
 	}
 
-	static private class FieldMetadata {
+	static protected class FieldMetadata {
 		Field field;
 		Class elementType;
 

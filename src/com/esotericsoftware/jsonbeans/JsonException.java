@@ -4,7 +4,7 @@ package com.esotericsoftware.jsonbeans;
 /** Indicates an error during serialization due to misconfiguration or during deserialization due to invalid input data.
  * @author Nathan Sweet <misc@n4te.com> */
 public class JsonException extends RuntimeException {
-	private StringBuffer trace;
+	protected StringBuffer trace;
 
 	public JsonException () {
 		super();
@@ -27,7 +27,7 @@ public class JsonException extends RuntimeException {
 		return causedBy(this, type);
 	}
 
-	private boolean causedBy (Throwable ex, Class type) {
+	protected boolean causedBy (Throwable ex, Class type) {
 		Throwable cause = ex.getCause();
 		if (cause == null || cause == ex) return false;
 		if (type.isAssignableFrom(cause.getClass())) return true;

@@ -21,17 +21,16 @@ import java.io.Writer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.regex.Pattern;
 
 /** Builder style API for emitting JSON.
  * @author Nathan Sweet */
 public class JsonWriter extends Writer {
 	final Writer writer;
-	private final ArrayList<JsonObject> stack = new ArrayList();
-	private JsonObject current;
-	private boolean named;
-	private OutputType outputType = OutputType.json;
-	private boolean quoteLongValues = false;
+	protected final ArrayList<JsonObject> stack = new ArrayList();
+	protected JsonObject current;
+	protected boolean named;
+	protected OutputType outputType = OutputType.json;
+	protected boolean quoteLongValues = false;
 
 	public JsonWriter (Writer writer) {
 		this.writer = writer;
@@ -153,7 +152,7 @@ public class JsonWriter extends Writer {
 		writer.close();
 	}
 
-	private class JsonObject {
+	protected class JsonObject {
 		final boolean array;
 		boolean needsComma;
 

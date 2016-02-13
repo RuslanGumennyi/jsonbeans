@@ -17,11 +17,11 @@ import java.util.NoSuchElementException;
  * </pre>
  * @author Nathan Sweet */
 public class JsonValue implements Iterable<JsonValue> {
-	private ValueType type;
+	protected ValueType type;
 
-	private String stringValue;
-	private double doubleValue;
-	private long longValue;
+	protected String stringValue;
+	protected double doubleValue;
+	protected long longValue;
 
 	public String name;
 	/** May be null. */
@@ -893,7 +893,7 @@ public class JsonValue implements Iterable<JsonValue> {
 		return buffer.toString();
 	}
 
-	private void prettyPrint (JsonValue object, StringBuilder buffer, int indent, PrettyPrintSettings settings) {
+	protected void prettyPrint (JsonValue object, StringBuilder buffer, int indent, PrettyPrintSettings settings) {
 		OutputType outputType = settings.outputType;
 		if (object.isObject()) {
 			if (object.child == null) {
@@ -965,19 +965,19 @@ public class JsonValue implements Iterable<JsonValue> {
 			throw new JsonException("Unknown object type: " + object);
 	}
 
-	static private boolean isFlat (JsonValue object) {
+	static protected boolean isFlat (JsonValue object) {
 		for (JsonValue child = object.child; child != null; child = child.next)
 			if (child.isObject() || child.isArray()) return false;
 		return true;
 	}
 
-	static private boolean isNumeric (JsonValue object) {
+	static protected boolean isNumeric (JsonValue object) {
 		for (JsonValue child = object.child; child != null; child = child.next)
 			if (!child.isNumber()) return false;
 		return true;
 	}
 
-	static private void indent (int count, StringBuilder buffer) {
+	static protected void indent (int count, StringBuilder buffer) {
 		for (int i = 0; i < count; i++)
 			buffer.append('\t');
 	}
@@ -1021,7 +1021,7 @@ public class JsonValue implements Iterable<JsonValue> {
 		}
 	}
 
-	static public class PrettyPrintSettings {
+	public static class PrettyPrintSettings {
 		public OutputType outputType;
 
 		/** If an object on a single line fits this many columns, it won't wrap. */
